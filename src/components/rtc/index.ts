@@ -29,15 +29,17 @@ export class Rtc {
         let UserSig = genTestUserSig(this.userId, param.sdkAppId, param.secretkey);
         this.inatellEventHandlers();
         try {
-            await this.cloud.enterRoom({
-                roomId: param.roomId,
-                sdkAppId: param.sdkAppId,
-                userId: this.userId,
-                userSig: UserSig.userSig,
-                role: TRTC.TYPE.ROLE_AUDIENCE,
-                scene: TRTC.TYPE.SCENE_LIVE,
-                autoReceiveAudio: !param.isMuteAudio
-            });
+            const enterParams = {
+              roomId: param.roomId,
+              strRoomId: param.strRoomId,
+              sdkAppId: param.sdkAppId,
+              userId: this.userId,
+              userSig: UserSig.userSig,
+              role: TRTC.TYPE.ROLE_AUDIENCE,
+              scene: TRTC.TYPE.SCENE_LIVE,
+              autoReceiveAudio: !param.isMuteAudio
+          }
+            await this.cloud.enterRoom(enterParams);
         } catch (error) {
             console.error('enterRoom room failed', error);
         }
