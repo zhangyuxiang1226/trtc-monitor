@@ -37,7 +37,8 @@ export class Rtc {
               userSig: UserSig.userSig,
               role: TRTC.TYPE.ROLE_AUDIENCE,
               scene: TRTC.TYPE.SCENE_LIVE,
-              autoReceiveAudio: !param.isMuteAudio
+              autoReceiveAudio: !param.isMuteAudio,
+              latencyLevel: 2,
           }
             await this.cloud.enterRoom(enterParams);
         } catch (error) {
