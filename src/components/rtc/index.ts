@@ -1,5 +1,6 @@
 import TRTC from 'trtc-sdk-v5';
 import genTestUserSig from '@/utils/gen-test-user-sig';
+import { privateKey } from 'tdesign-vue/es/tree/adapt';
 
 
 export const EventEnum = {
@@ -13,6 +14,7 @@ export type enterParame = {
     roomId: number,
     strRoomId: string,
     isMuteAudio: boolean;
+    privilegeMap: string;
 };
 
 export class Rtc {
@@ -28,19 +30,39 @@ export class Rtc {
     public async enterRoom(param: enterParame) {
         let UserSig = genTestUserSig(this.userId, param.sdkAppId, param.secretkey);
         this.inatellEventHandlers();
+        console.log("param", param);
         try {
-            const enterParams = {
-              roomId: param.roomId,
-              strRoomId: param.strRoomId,
-              sdkAppId: param.sdkAppId,
-              userId: this.userId,
-              userSig: UserSig.userSig,
-              role: TRTC.TYPE.ROLE_AUDIENCE,
-              scene: TRTC.TYPE.SCENE_LIVE,
-              autoReceiveAudio: !param.isMuteAudio,
-              latencyLevel: 2,
-          }
-            await this.cloud.enterRoom(enterParams);
+            if (param.privilegeMap) {
+                const enterParams = {
+                    roomId: param.roomId,
+                    strRoomId: param.strRoomId,
+                    sdkAppId: param.sdkAppId,
+                    userId: this.userId,
+                    userSig: UserSig.userSig,
+                    role: TRTC.TYPE.ROLE_AUDIENCE,
+                    scene: TRTC.TYPE.SCENE_LIVE,
+                    privateMapKey: param.privilegeMap,
+                    autoReceiveAudio: !param.isMuteAudio,
+                    latencyLevel: 2,
+                }
+                console.log("luodong1", enterParams);
+                await this.cloud.enterRoom(enterParams);
+            } else {
+                const enterParams = {
+                    roomId: param.roomId,
+                    strRoomId: param.strRoomId,
+                    sdkAppId: param.sdkAppId,
+                    userId: this.userId,
+                    userSig: UserSig.userSig,
+                    role: TRTC.TYPE.ROLE_AUDIENCE,
+                    scene: TRTC.TYPE.SCENE_LIVE,
+                    autoReceiveAudio: !param.isMuteAudio,
+                    latencyLevel: 2,
+                }
+                console.log("luodong2", enterParams);
+                await this.cloud.enterRoom(enterParams);
+            }
+
         } catch (error) {
             console.error('enterRoom room failed', error);
         }
@@ -50,9 +72,9 @@ export class Rtc {
         await this.cloud.exitRoom();
     }
 
-    public async destroy(){
-      await this.cloud.exitRoom();
-      await this.cloud.destroy();
+    public async destroy() {
+        await this.cloud.exitRoom();
+        await this.cloud.destroy();
     }
 
     public startRemoteVideo(userId: string, view: HTMLElement) {

@@ -45,6 +45,9 @@
                     <t-form-item label="房间号" name="name">
                         <t-input :style="{ width: '480px' }" v-model="formData.roomId" placeholder="请输入房间号"></t-input>
                     </t-form-item>
+                    <t-form-item label="privilegeMap" name="privilegeMap ">
+                        <t-input :style="{ width: '480px' }" v-model="formData.privilegeMap" placeholder="privilegeMap"></t-input>
+                    </t-form-item>
                     <t-form-item label="是否静音" name="muteAudio">
                         <t-radio-group v-model="formData.muteAudio">
                             <t-radio value="0">是</t-radio>
@@ -108,12 +111,14 @@ const initialData = [
             {
                 key: '20011234_2333', // 这里可以使用 sdkappid_roomid的格式填入key
                 roomId: 2333,
+                privilegeMap: '',
                 isMuteAudio: true,
                 isStringRoom: false // 字符串roomid: true
             },
             {
                 key: '3',
                 roomId: 455,
+                privilegeMap: '',
                 isMuteAudio: true,
                 isStringRoom: false
             },
@@ -123,6 +128,7 @@ const initialData = [
 
 const INITIAL_DATA = {
     roomId: '',
+    privilegeMap: '',
     muteAudio: '',
     stringRoom: '',
     key: '',
@@ -230,6 +236,7 @@ export default {
                 let newData = {
                     key: key,
                     roomId: this.formData.roomId,
+                    privilegeMap: this.formData.privilegeMap,
                     isMuteAudio: this.formData.muteAudio === '0' ? true : false,
                     isStringRoom: this.formData.stringRoom === '0' ? true : false
                 };
@@ -294,11 +301,10 @@ export default {
 
             const allRowData = this.$refs.table.getData(row.key);
             console.log('luodong', allRowData.parent.row);
-
-
             let enterParam = {
                 sdkAppId: allRowData.parent.row.sdkAppId,
                 secretkey: allRowData.parent.row.secretkey,
+                privilegeMap: row.privilegeMap,
                 roomId: roomId,
                 strRoomId: strRoomId,
                 isMuteAudio: row.isMuteAudio,
